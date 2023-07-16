@@ -8,7 +8,7 @@ App.use("/auth", authRouter);
 App.get("/", (req, res) => {
   res.status(200).send();
 });
-connectDb();
+connectDb(); //connection establishment with the cloud database
 const PORT = process.env.PORT; //fetch the port from config.env file
 App.listen(PORT, () => {
   console.log("listening on port :", PORT);
