@@ -36,7 +36,7 @@ const loginController = async (req, res) => {
     const isPassCorrect = await bcrypt.compare(password, user.password); //compares the given password with old decrypted pass
     if (!isPassCorrect) return res.status(403).send("Invalid password");
     //create the AccessToken for the user with parameters as: id,email [could be anything]
-    const accessToken = generateToken({ _id: user._id, email: user.email });
+    const accessToken = generateToken({ _id: user._id });
     return res.status(201).json({
       accessToken,
     });
@@ -47,8 +47,9 @@ const loginController = async (req, res) => {
 // internal methods:
 function generateToken(payload) {
   try {
-    return jwt.sign(payload, "scldhflascveghdavhdfagervfwefcsvnegev", {
-      expiresIn: "20s",
+    const TOKEN_SEC_KEY = process.env.TOKEN_SEC_KEY; //fetch the token key
+    return jwt.sign(payload, TOKEN_SEC_KEY, {
+      expiresIn: "60s",
     }); //use sign method of JWT to create & return accessToken
   } catch (error) {
     console.log(error);
