@@ -3,6 +3,7 @@
 const User = require("../Models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+//Logic for the signup controller
 const signupController = async (req, res) => {
   try {
     const { email, password } = req.body; //fetch the email ,password from req.body
@@ -33,15 +34,34 @@ const loginController = async (req, res) => {
     // Invalid credential:: user does not exists
     if (!user) return res.status(404).send("User Not Found");
     //compare if the given password is correct
-    const isPassCorrect = await bcrypt.compare(password, user.password); //compares the given password with old decrypted pass
+    const isPassCorrect = await bcrypt.compare(password, user.password); //compares the given password with old encrypted pass
     if (!isPassCorrect) return res.status(403).send("Invalid password");
     //create the AccessToken for the user with parameters as: id,email [could be anything]
     const accessToken = generateToken({ _id: user._id });
+    //refresh token is used to re-generate access token for the user without the need of re-login
+    const refreshToken = generateRefreshToken({ _id: user._id });
     return res.status(201).json({
       accessToken,
+      refreshToken,
     });
   } catch (error) {
     console.log(error);
+  }
+};
+//Logic for the refresh controller
+//if the refresh token has some validity,it regenerates new Access Token
+const refreshAccessTokenController = async (req, res) => {
+  const { refreshToken } = req.body;
+  try {
+    //is refreshToken made by our server [verify it using TOKEN_SEC_KEY]
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SEC_KEY);
+    const _id = decoded._id;
+    const newAccessToken = generateToken({ _id });
+    return res.status(201).json({
+      newAccessToken,
+    });
+  } catch (error) {
+    return res.status(401).send("Invalid Refresh Token");
   }
 };
 // internal methods:
@@ -49,7 +69,18 @@ function generateToken(payload) {
   try {
     const TOKEN_SEC_KEY = process.env.TOKEN_SEC_KEY; //fetch the token key
     return jwt.sign(payload, TOKEN_SEC_KEY, {
-      expiresIn: "60s",
+      expiresIn: "5m",
+    }); //use sign method of JWT to create & return accessToken
+  } catch (error) {
+    console.log(error);
+  }
+}
+//Method to generate refresh token:
+function generateRefreshToken(payload) {
+  try {
+    const REFRESH_TOKEN_SEC_KEY = process.env.REFRESH_TOKEN_SEC_KEY; //fetch the token key
+    return jwt.sign(payload, REFRESH_TOKEN_SEC_KEY, {
+      expiresIn: "1y",
     }); //use sign method of JWT to create & return accessToken
   } catch (error) {
     console.log(error);
@@ -58,4 +89,5 @@ function generateToken(payload) {
 module.exports = {
   signupController,
   loginController,
+  refreshAccessTokenController,
 };
