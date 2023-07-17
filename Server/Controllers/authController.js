@@ -52,6 +52,9 @@ const loginController = async (req, res) => {
 //if the refresh token has some validity,it regenerates new Access Token
 const refreshAccessTokenController = async (req, res) => {
   const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return res.status(401).send("Refresh Token required");
+  }
   try {
     //is refreshToken made by our server [verify it using TOKEN_SEC_KEY]
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SEC_KEY);
