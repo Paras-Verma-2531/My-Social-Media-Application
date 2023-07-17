@@ -2,6 +2,7 @@
 //Logic for the signup controller
 const User = require("../Models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const signupController = async (req, res) => {
   try {
     const { email, password } = req.body; //fetch the email ,password from req.body
@@ -34,13 +35,25 @@ const loginController = async (req, res) => {
     //compare if the given password is correct
     const isPassCorrect = await bcrypt.compare(password, user.password); //compares the given password with old decrypted pass
     if (!isPassCorrect) return res.status(403).send("Invalid password");
+    //create the AccessToken for the user with parameters as: id,email [could be anything]
+    const accessToken = generateToken({ _id: user._id, email: user.email });
     return res.status(201).json({
-      user,
+      accessToken,
     });
   } catch (error) {
     console.log(error);
   }
 };
+// internal methods:
+function generateToken(payload) {
+  try {
+    return jwt.sign(payload, "scldhflascveghdavhdfagervfwefcsvnegev", {
+      expiresIn: "20s",
+    }); //use sign method of JWT to create & return accessToken
+  } catch (error) {
+    console.log(error);
+  }
+}
 module.exports = {
   signupController,
   loginController,
