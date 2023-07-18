@@ -1,4 +1,3 @@
-require("dotenv").config({ path: "./config.env" });
 const mongoose = require("mongoose");
 async function connectDb() {
   const MongoUri = process.env.MONGOURI; // fetch the Uri from env file:
