@@ -40,9 +40,14 @@ const loginController = async (req, res) => {
     const accessToken = generateToken({ _id: user._id });
     //refresh token is used to re-generate access token for the user without the need of re-login
     const refreshToken = generateRefreshToken({ _id: user._id });
+    // Access Token need to stored in local storage of frontEnd:
+    //Refresh Token need to stored in cookies
+    res.cookie("jwt", refreshToken, {
+      secure: true,
+      httpOnly: true, // will be accessed only to backend not frontend
+    });
     return res.status(201).json({
       accessToken,
-      refreshToken,
     });
   } catch (error) {
     console.log(error);
@@ -51,10 +56,11 @@ const loginController = async (req, res) => {
 //Logic for the refresh controller
 //if the refresh token has some validity,it regenerates new Access Token
 const refreshAccessTokenController = async (req, res) => {
-  const { refreshToken } = req.body;
-  if (!refreshToken) {
-    return res.status(401).send("Refresh Token required");
+  const cookies = req.cookies; //fetch the array of cookies
+  if (!cookies.jwt) {
+    return res.status(401).send("Refresh Token cookie required");
   }
+  const refreshToken = cookies.jwt; //fetch the refreshToken from cookie stored with key as jwt
   try {
     //is refreshToken made by our server [verify it using TOKEN_SEC_KEY]
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SEC_KEY);
