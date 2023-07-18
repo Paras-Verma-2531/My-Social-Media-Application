@@ -3,23 +3,24 @@
 const User = require("../Models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { success, error } = require("../Utils/responseWrapper");
 //Logic for the signup controller
 const signupController = async (req, res) => {
   try {
     const { email, password } = req.body; //fetch the email ,password from req.body
     if (!email || !password)
-      return res.status(400).send("Email and password required!"); //if either of 2 is missing
+      // return res.status(400).send("Email and password required!"); //if either of 2 is missing
+      return res.send(error(400, "Email and password required!"));
     const oldUser = await User.findOne({ email });
-    if (oldUser) return res.status(409).send("Email is already registered");
+    if (oldUser) return res.send(error(409, "Email is already registered"));
     //if user is new, encrypt its password and create new entry in db
     const decryptPass = await bcrypt.hash(password, 10);
     const newUser = await User.create({
       email,
       password: decryptPass,
     });
-    return res.status(201).json({
-      newUser,
-    });
+    //return res.status(201).json({newUser});
+    return res.send(success(201, newUser));
   } catch (error) {
     console.log(error);
   }
@@ -29,14 +30,14 @@ const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password)
-      return res.status(400).send("Email and password required for login!");
+      return res.send(error(400, "Email and password required for login!"));
     const user = await User.findOne({ email });
     // Invalid credential:: user does not exists
-    if (!user) return res.status(404).send("User Not Found");
+    if (!user) return res.send(error(404, "User Not Found"));
     //compare if the given password is correct
     const isPassCorrect = await bcrypt.compare(password, user.password); //compares the given password with old encrypted pass
-    if (!isPassCorrect) return res.status(403).send("Invalid password");
-    //create the AccessToken for the user with parameters as: id,email [could be anything]
+    if (!isPassCorrect) return res.send(error(403, "Invalid password"));
+    //create the AccessToken for the user with parameters as: object_id [could be anything]
     const accessToken = generateToken({ _id: user._id });
     //refresh token is used to re-generate access token for the user without the need of re-login
     const refreshToken = generateRefreshToken({ _id: user._id });
@@ -46,9 +47,7 @@ const loginController = async (req, res) => {
       secure: true,
       httpOnly: true, // will be accessed only to backend not frontend
     });
-    return res.status(201).json({
-      accessToken,
-    });
+    return res.send(success(201, accessToken));
   } catch (error) {
     console.log(error);
   }
@@ -58,7 +57,7 @@ const loginController = async (req, res) => {
 const refreshAccessTokenController = async (req, res) => {
   const cookies = req.cookies; //fetch the array of cookies
   if (!cookies.jwt) {
-    return res.status(401).send("Refresh Token cookie required");
+    return res.send(error(401, "Refresh Token cookie required"));
   }
   const refreshToken = cookies.jwt; //fetch the refreshToken from cookie stored with key as jwt
   try {
@@ -66,11 +65,9 @@ const refreshAccessTokenController = async (req, res) => {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SEC_KEY);
     const _id = decoded._id;
     const newAccessToken = generateToken({ _id });
-    return res.status(201).json({
-      newAccessToken,
-    });
+    return res.send(success(201, newAccessToken));
   } catch (error) {
-    return res.status(401).send("Invalid Refresh Token");
+    return res.send(error(401, "Invalid Refresh Token"));
   }
 };
 // internal methods:
