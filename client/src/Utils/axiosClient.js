@@ -7,7 +7,7 @@ import {
 } from "./localStorageManager";
 // axios is better than fetch to call API's because of intercepters
 export const axiosClient = axios.create({
-  baseURL: "http://localhost:4019",
+  baseURL:process.env.REACT_APP_SERVER_BASE_URL,
   withCredentials: true, // prevent sending cookie to the frontEnd from backend
 });
 // Interceptors can be defined as the layer just before the frontEnd which provide the smooth process for handeling errors:or other task such as adding Authentication headers
