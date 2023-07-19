@@ -16,6 +16,7 @@ function Login() {
      email:userEmail,
      password:userPassword
    })
+   console.log(result);
  }
   return (
     <div className="Login">
