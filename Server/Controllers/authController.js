@@ -20,7 +20,7 @@ const signupController = async (req, res) => {
       password: decryptPass,
     });
     //return res.status(201).json({newUser});
-    return res.send(success(201, newUser));
+    return res.send(success(201, { newUser }));
   } catch (error) {
     console.log(error);
   }
@@ -47,7 +47,7 @@ const loginController = async (req, res) => {
       secure: true,
       httpOnly: true, // will be accessed only to backend not frontend
     });
-    return res.send(success(201, accessToken));
+    return res.send(success(201, { accessToken }));
   } catch (error) {
     console.log(error);
   }
@@ -65,7 +65,7 @@ const refreshAccessTokenController = async (req, res) => {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SEC_KEY);
     const _id = decoded._id;
     const newAccessToken = generateToken({ _id });
-    return res.send(success(201, newAccessToken));
+    return res.send(success(201, { newAccessToken }));
   } catch (error) {
     return res.send(error(401, "Invalid Refresh Token"));
   }
