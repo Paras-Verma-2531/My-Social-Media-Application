@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {axiosClient} from '../../Utils/axiosClient'
+import { KEY_ACCESS_TOKEN, setItem } from "../../Utils/localStorageManager";
 import "./Login.scss";
 function Login() {
   //fetch the data::
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const navigate=useNavigate();
  //function to handle Data on submit
   async function handleSubmit(event)
  {
@@ -16,7 +18,9 @@ function Login() {
      email:userEmail,
      password:userPassword
    })
-   console.log(result);
+   setItem(KEY_ACCESS_TOKEN,result.response.accessToken);//save the access token to localStorage
+   navigate('/');// navigate to home page once,done with login
+   //console.log(result);
  }
   return (
     <div className="Login">
