@@ -1,18 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import {axiosClient} from '../../Utils/axiosClient';
 import "./Signup.scss";
 function Signup() {
+  //fetch the data::
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  //function to handle Data on submit
+  async function handleSubmit(event) {
+    event.preventDefault(); //prevent the default behaviour of form
+    const result = await axiosClient.post(
+      "/auth/signup",
+      //send the data in the body of API
+      {
+        email: userEmail,
+        password: userPassword,
+      }
+    );
+    console.log(result);
+  }
   return (
     <div className="Signup">
       <div className="signup-box">
         <h2 className="signup-heading">Signup</h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <label htmlFor="name">Name</label>
           <input type="text" id="name" className="signup-input" />
           <label htmlFor="email">Email</label>
-          <input type="email" id="email" className="signup-input" />
+          <input
+            type="email"
+            id="email"
+            className="signup-input"
+            onChange={(event) => setUserEmail(event.target.value)}
+          />
           <label htmlFor="password">Password</label>
-          <input type="password" id="password" className="signup-input" />
+          <input
+            type="password"
+            id="password"
+            className="signup-input"
+            onChange={(event) => setUserPassword(event.target.value)}
+          />
           <input type="submit" className="signup-submit" />
         </form>
         <p className="login-Navigate">
