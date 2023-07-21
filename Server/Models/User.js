@@ -28,8 +28,14 @@ const userSchema = mongoose.Schema({
   ],
   followings: [
     {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user", // used as reference:: should be name of the another schema
+    },
+  ],
+  posts: [
+    {
       type: mongoose.Schema.Types.ObjectId, //fetch the object id from db
-      ref: "user",
+      ref: "post",
     },
   ],
 });
