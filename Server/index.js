@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const connectDb = require("./dbConnect");
 const authRouter = require("./Routers/authRouter");
 const postRouter = require("./Routers/postRouter");
+const userRouter = require("./Routers/userRouter");
 const App = express();
 
 //middlewares::
@@ -21,6 +22,7 @@ App.use(
 //Routers::
 App.use("/auth", authRouter); //forward the request to the authRouter if the endpoint is auth:
 App.use("/post", postRouter);
+App.use("/user", userRouter);
 App.get("/", (req, res) => {
   res.status(200).send();
 });
