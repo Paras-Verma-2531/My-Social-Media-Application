@@ -31,7 +31,7 @@ const likeAndDislikeController = async (req, res) => {
     if (!post) return res.send(error(404, "Post not found"));
     // if user present :: means user already liked the post
     if (post.likes.includes(currUserId)) {
-      const index = post.likes.indxOf(currUserId);
+      const index = post.likes.indexOf(currUserId);
       post.likes.splice(index, 1); //delete 1 element present at index:
       await post.save();
       return res.send(success(200, "post unliked"));
