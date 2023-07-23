@@ -55,7 +55,7 @@ const updatePostController = async (req, res) => {
     const post = await Post.findById(postId);
     if (!post) return res.send(error(404, "no such post found"));
     //user cannot update another's post:
-    if (post.owner !== currUserId)
+    if (post.owner.toString() !== currUserId)
       return res.send(error(403, "you have no admin rights on this post"));
     post.caption = newCaption;
     await post.save();

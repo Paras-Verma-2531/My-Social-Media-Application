@@ -53,6 +53,20 @@ const loginController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+//Logic for the logOut controller
+const logOutController = async (req, res) => {
+  //the duty of backend is to delete the RT. cookie :: And the duty of frontend would be to delete the AT. from localStor.
+  try {
+    res.clearCookie("jwt", {
+      //RefreshToken
+      httpOnly: true,
+      secure: true,
+    });
+    return res.send(success(200, "Cookie deleted"));
+  } catch (err) {
+    return res.send(error(500, err.message));
+  }
+};
 //Logic for the refresh controller
 //if the refresh token has some validity,it regenerates new Access Token
 const refreshAccessTokenController = async (req, res) => {
@@ -97,4 +111,5 @@ module.exports = {
   signupController,
   loginController,
   refreshAccessTokenController,
+  logOutController,
 };
