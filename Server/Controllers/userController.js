@@ -1,9 +1,12 @@
+const Post = require("../Models/Post");
 const User = require("../Models/User");
 const { success, error } = require("../Utils/responseWrapper");
 const followOrUnfollowController = async (req, res) => {
   const { userIdToFollow } = req.body;
   const currUserId = req._id;
   try {
+    if (userIdToFollow === currUserId)
+      return res.send(error(400, "Users cannot follow themself"));
     const currUser = await User.findById(currUserId);
     const userToFollow = await User.findById(userIdToFollow); //is user to follow valid?
     if (!userToFollow) return res.send(error(404, "User to follow not found"));
@@ -29,4 +32,22 @@ const followOrUnfollowController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
-module.exports = followOrUnfollowController;
+// Controller to get posts of user followings::
+const getPostOfFollowingController = async (req, res) => {
+  const currUserId = req._id;
+  const currUser = await User.findById(currUserId);
+  //fetch post of currUser followings:
+  try {
+    const posts = await Post.find({
+      // get post of all the users: where owner of post is present in user's following list
+      owner: {
+        $in: currUser.followings,
+      },
+    });
+    // Another approach could be to iterate in followings of user and fetch their posts
+    return res.send(success(200, posts));
+  } catch (err) {
+    return res.send(error(500, err.message));
+  }
+};
+module.exports = { followOrUnfollowController, getPostOfFollowingController };
