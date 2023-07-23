@@ -4,9 +4,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const connectDb = require("./dbConnect");
-const authRouter = require("./Routers/authRouter");
-const postRouter = require("./Routers/postRouter");
-const userRouter = require("./Routers/userRouter");
+const mainRouter = require("./Routers/mainRouter");
 const App = express();
 
 //middlewares::
@@ -20,12 +18,7 @@ App.use(
   })
 ); // To include Access control policy such that our backend allows resources to accessed from other loc.
 //Routers::
-App.use("/auth", authRouter); //forward the request to the authRouter if the endpoint is auth:
-App.use("/post", postRouter);
-App.use("/user", userRouter);
-App.get("/", (req, res) => {
-  res.status(200).send();
-});
+App.use("/api", mainRouter);
 connectDb(); //connection establishment with the cloud database
 const PORT = process.env.PORT; //fetch the port from config.env file
 App.listen(PORT, () => {
