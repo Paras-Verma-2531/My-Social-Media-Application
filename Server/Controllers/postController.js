@@ -44,8 +44,29 @@ const likeAndDislikeController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+//controller to updatePost
+const updatePostController = async (req, res) => {
+  const { postId, newCaption } = req.body;
+  const currUserId = req._id;
+  try {
+    const currUser = await User.findById(currUserId);
+    if (currUser.posts.length === 0)
+      return res.send(error(400, "user have no post to update"));
+    const post = await Post.findById(postId);
+    if (!post) return res.send(error(404, "no such post found"));
+    //user cannot update another's post:
+    if (post.owner !== currUserId)
+      return res.send(error(403, "you have no admin rights on this post"));
+    post.caption = newCaption;
+    await post.save();
+    return res.send(success(200, "post updated"));
+  } catch (err) {
+    return res.send(error(500, err.message));
+  }
+};
 module.exports = {
   createPostController,
   getAllPostController,
   likeAndDislikeController,
+  updatePostController,
 };
