@@ -54,6 +54,8 @@ const getPostOfFollowingController = async (req, res) => {
 const getMyPostsController = async (req, res) => {
   const currUserId = req._id;
   try {
+    if (!(await User.findById(currUserId)))
+      return res.send(error(404, "user does not exists"));
     const myPosts = await Post.find({
       //find all the posts where owner of the post is === currUserId:
       owner: currUserId,
