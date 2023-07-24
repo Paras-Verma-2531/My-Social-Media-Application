@@ -76,9 +76,54 @@ const getUserPostsController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+//deleteMyProfile controller
+const deleteMyProfileController = async (req, res) => {
+  const currUserId = req._id;
+  try {
+    const currUser = await User.findById(currUserId);
+    if (!currUser) return res.send(error(404, "user profile not found"));
+    //delete all the posts of this user:
+    await Post.deleteMany({ owner: currUserId });
+    //remove the user from the following list of his followers
+    currUser.followers.forEach(async (followerId) => {
+      const follower = await User.findById(followerId);
+      const index = follower.followings.indexOf(currUserId);
+      follower.followings.splice(index, 1);
+      await follower.save();
+    });
+    //remove the user from follower list of his followings'
+    currUser.followings.forEach(async (followingId) => {
+      const following = await User.findById(followingId);
+      const index = following.followers.indexOf(currUserId);
+      following.followers.splice(index, 1);
+      await following.save();
+    });
+    //dislike the user from the posts he liked:
+    const allPosts = await Post.find();
+    allPosts.forEach(async (post) => {
+      if (post.likes.includes(currUserId)) {
+        const index = post.likes.indexOf(currUserId);
+        post.likes.splice(index, 1);
+      }
+      await post.save();
+    });
+    //delete the user
+    await User.deleteOne({ _id: currUserId });
+
+    //remove the refreshtoken from the cookies as well
+    res.clearCookie("jwt", {
+      httpOnly: true,
+      secure: true,
+    });
+    return res.send(success(200, "User profile deleted"));
+  } catch (err) {
+    return res.send(error(500, err.message));
+  }
+};
 module.exports = {
   followOrUnfollowController,
   getPostOfFollowingController,
   getMyPostsController,
   getUserPostsController,
+  deleteMyProfileController,
 };
