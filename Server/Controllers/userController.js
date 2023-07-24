@@ -50,4 +50,21 @@ const getPostOfFollowingController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
-module.exports = { followOrUnfollowController, getPostOfFollowingController };
+//getMyPosts controller
+const getMyPostsController = async (req, res) => {
+  const currUserId = req._id;
+  try {
+    const myPosts = await Post.find({
+      //find all the posts where owner of the post is === currUserId:
+      owner: currUserId,
+    });
+    return res.send(success(200, { myPosts }));
+  } catch (error) {
+    return res.send(error(500, err.message));
+  }
+};
+module.exports = {
+  followOrUnfollowController,
+  getPostOfFollowingController,
+  getMyPostsController,
+};
