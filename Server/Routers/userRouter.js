@@ -2,6 +2,7 @@ const {
   followOrUnfollowController,
   getPostOfFollowingController,
   getMyPostsController,
+  getUserPostsController,
 } = require("../Controllers/userController");
 const requireUserMiddleware = require("../Middlewares/requireUser");
 const userRouter = require("express").Router();
@@ -12,4 +13,5 @@ userRouter.get(
   getPostOfFollowingController
 );
 userRouter.get("/myPosts", requireUserMiddleware, getMyPostsController);
+userRouter.post("/userPosts", requireUserMiddleware, getUserPostsController);
 module.exports = userRouter;
