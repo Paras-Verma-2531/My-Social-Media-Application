@@ -64,9 +64,31 @@ const updatePostController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+//delete Post
+const deletePostController = async (req, res) => {
+  const { postId } = req.body;
+  const currUserId = req._id;
+  try {
+    const post = await Post.findById(postId);
+    const currUser = await User.findById(currUserId);
+    if (!post) return res.send(error(404, "post not found"));
+    if (post.owner.toString() !== currUserId)
+      return res.send(error(400, "you have no admin rights on this post"));
+    await Post.deleteOne({ postId }); //delete that post from Post collections
+    //delete from Users posts array as well
+    const index = currUser.posts.indexOf(postId);
+    currUser.posts.splice(index, 1);
+    await post.save();
+    await currUser.save();
+    return res.send(success(200, "post deleted"));
+  } catch (err) {
+    return res.send(error(500, err.message));
+  }
+};
 module.exports = {
   createPostController,
   getAllPostController,
   likeAndDislikeController,
   updatePostController,
+  deletePostController,
 };
