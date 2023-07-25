@@ -1,19 +1,11 @@
-import React, { useEffect } from "react";
-import { axiosClient } from "../../Utils/axiosClient";
-
+import React from "react";
+import { Outlet } from "react-router-dom";
+import Navbar from "../../Components/navbar/Navbar";
 function Home() {
-  useEffect(() => {
-    fetchData();
-  }, []);
-  async function fetchData() {
-    const response = await axiosClient.get("/post/all");
-    console.log("got the response", response);
-  }
-  return (
-    <>
-      <h1>Home</h1>
-    </>
-  );
+  return <>
+ <Navbar/>
+ {/* either the feed or profile will appear bottom the navbar */}
+ <Outlet/>
+  </>
 }
-
 export default Home;
