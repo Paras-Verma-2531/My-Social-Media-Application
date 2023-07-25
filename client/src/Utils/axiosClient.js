@@ -7,7 +7,7 @@ import {
 } from "./localStorageManager";
 // axios is better than fetch to call API's because of intercepters
 export const axiosClient = axios.create({
-  baseURL:process.env.REACT_APP_SERVER_BASE_URL,
+  baseURL: process.env.REACT_APP_SERVER_BASE_URL,
   withCredentials: true, // prevent sending cookie to the frontEnd from backend
 });
 // Interceptors can be defined as the layer just before the frontEnd which provide the smooth process for handeling errors:or other task such as adding Authentication headers
@@ -33,16 +33,21 @@ axiosClient.interceptors.response.use(async (response) => {
     window.location.replace("/login", "_self");
     return Promise.reject(message);
   }
-  if (statusCode === 401) {
+  if (statusCode === 401 && !OriginalRequest._retry) {
+    OriginalRequest._retry = true; //prevent from infinite loop
     // Access token is experied
-    const newResponse = await axiosClient.get("/auth/refresh"); // silently call the refresh API to generate new accessToken
+    const newResponse = await axios
+      .create({
+        withCredentials: true, //means passing cookie in the request
+      })
+      .get("/auth/refresh"); // silently call the refresh API to generate new accessToken
     console.log("result from backend", newResponse);
-    if (newResponse.status === "ok") {
+    if (newResponse.data.status === "ok") {
       // status ok means :: refreshToken is verfied & is active
-      setItem(KEY_ACCESS_TOKEN, newResponse.response.newAccessToken); //set the new AccessToken in local Storage
+      setItem(KEY_ACCESS_TOKEN, newResponse.data.response.newAccessToken); //set the new AccessToken in local Storage
       OriginalRequest.headers[
         "Authorization"
-      ] = `Bearer ${newResponse.response.newAccessToken}`;
+      ] = `Bearer ${newResponse.data.response.newAccessToken}`;
       return axios(OriginalRequest);
     }
   }
