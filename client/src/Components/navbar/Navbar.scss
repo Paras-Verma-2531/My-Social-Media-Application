@@ -10,5 +10,17 @@
     padding: 10px 20px;
     justify-content: space-between;
     height: 100%;
+    .right-side {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      justify-content: center;
+      .logout {
+        font-size: 1.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
   }
 }
