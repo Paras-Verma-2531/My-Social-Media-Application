@@ -122,10 +122,22 @@ const deleteMyProfileController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+//getProfileController
+const getProfileController = async (req, res) => {
+  const currUserId = req._id;
+  try {
+    const currUser = await User.findById(currUserId);
+    if (!currUser) return res.send(error(404, "User profile not found"));
+    return res.send(success(200, { currUser }));
+  } catch (err) {
+    return res.send(error(500, err.message));
+  }
+};
 module.exports = {
   followOrUnfollowController,
   getPostOfFollowingController,
   getMyPostsController,
   getUserPostsController,
   deleteMyProfileController,
+  getProfileController,
 };

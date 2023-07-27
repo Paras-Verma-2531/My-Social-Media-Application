@@ -1,21 +1,11 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import Avatar from "../avatar/Avatar";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineLogout } from "react-icons/ai";
-import LoadingBar from "react-top-loading-bar";
 import "./Navbar.scss";
+import { useSelector } from "react-redux";
 function Navbar() {
-  const loadingRef = useRef(null);
-  const [loading, setLoading] = useState(false);
-  function toogleLoadingBar() {
-    if (loading) {
-      setLoading(false);
-      loadingRef.current.complete();
-    } else {
-      setLoading(true);
-      loadingRef.current.continuousStart();
-    }
-  }
+  const userProfile = useSelector((state) => state.appConfigReducer.myProfile);
   const navigate = useNavigate();
   return (
     <div className="navbar">
@@ -27,18 +17,17 @@ function Navbar() {
         <div className="right-side">
           <div
             className="profile hover-link"
-            onClick={() => navigate("/profile/dummy")}
+            onClick={() => navigate(`/profile/${userProfile?._id}`)}
           >
-            <Avatar />
+            <Avatar src={userProfile?.avatar?.url} />
           </div>
-          <div className="logout hover-link" onClick={toogleLoadingBar}>
-            <LoadingBar color="#4db4f8" ref={loadingRef} />
+          <div className="logout hover-link">
             <AiOutlineLogout />
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}
 
 export default Navbar;

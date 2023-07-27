@@ -30,6 +30,7 @@ axiosClient.interceptors.response.use(async (response) => {
     // Access token is experied
     const newResponse = await axios
       .create({
+        baseURL: process.env.REACT_APP_SERVER_BASE_URL,
         withCredentials: true, //means passing cookie in the request
       })
       .get("/auth/refresh"); // silently call the refresh API to generate new accessToken

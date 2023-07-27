@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import {axiosClient} from '../../Utils/axiosClient';
+import { axiosClient } from "../../Utils/axiosClient";
 import "./Signup.scss";
 function Signup() {
   //fetch the data::
   const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [userPassword, setUserPassword] = useState("");
   //function to handle Data on submit
   async function handleSubmit(event) {
@@ -14,10 +15,10 @@ function Signup() {
       //send the data in the body of API
       {
         email: userEmail,
+        name: userName,
         password: userPassword,
       }
     );
-    console.log(result);
   }
   return (
     <div className="Signup">
@@ -25,7 +26,12 @@ function Signup() {
         <h2 className="signup-heading">Signup</h2>
         <form onSubmit={handleSubmit}>
           <label htmlFor="name">Name</label>
-          <input type="text" id="name" className="signup-input" />
+          <input
+            type="text"
+            id="name"
+            className="signup-input"
+            onChange={(event) => setUserName(event.target.value)}
+          />
           <label htmlFor="email">Email</label>
           <input
             type="email"
