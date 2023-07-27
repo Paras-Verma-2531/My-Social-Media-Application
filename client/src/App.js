@@ -5,6 +5,7 @@ import RequireUser from "./Components/RequireUser";
 import { Route, Routes } from "react-router-dom";
 import Feed from "./Components/feed/Feed";
 import Profile from "./Components/profile/Profile";
+import UpdateProfile from "./Components/updateProfile/UpdateProfile";
 function App() {
   return (
     <>
@@ -16,6 +17,7 @@ function App() {
             {/* when path is empty show feeds bottom the navbar else profile */}
             <Route path='/' element={<Feed/>}/>
             <Route path='/profile/:userId' element={<Profile/>}/>
+            <Route path='/updateProfile' element={<UpdateProfile/>}/>
           </Route>
         </Route>
         <Route path="/login" element={<Login />} />
