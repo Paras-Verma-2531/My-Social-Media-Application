@@ -25,14 +25,6 @@ axiosClient.interceptors.response.use(async (response) => {
   if (status === "ok") return data; // if no error encountered:: return the data
   const { statusCode, message } = data;
   const OriginalRequest = response.config;
-  const originalBaseUrl = response.config.url; //fetch the API for which error encountered
-  if (statusCode === 401 && originalBaseUrl === "/auth/refresh") {
-    //Refresh token is also expired: thus user need to re-login
-    // delete it's access token from localStorage
-    removeItem(KEY_ACCESS_TOKEN);
-    window.location.replace("/login", "_self");
-    return Promise.reject(message);
-  }
   if (statusCode === 401 && !OriginalRequest._retry) {
     OriginalRequest._retry = true; //prevent from infinite loop
     // Access token is experied
@@ -41,7 +33,6 @@ axiosClient.interceptors.response.use(async (response) => {
         withCredentials: true, //means passing cookie in the request
       })
       .get("/auth/refresh"); // silently call the refresh API to generate new accessToken
-    console.log("result from backend", newResponse);
     if (newResponse.data.status === "ok") {
       // status ok means :: refreshToken is verfied & is active
       setItem(KEY_ACCESS_TOKEN, newResponse.data.response.newAccessToken); //set the new AccessToken in local Storage
@@ -49,6 +40,12 @@ axiosClient.interceptors.response.use(async (response) => {
         "Authorization"
       ] = `Bearer ${newResponse.data.response.newAccessToken}`;
       return axios(OriginalRequest);
+    } else {
+      //Refresh token is also expired: thus user need to re-login
+      // delete it's access token from localStorage
+      removeItem(KEY_ACCESS_TOKEN);
+      window.location.replace("/login", "_self");
+      return Promise.reject(message);
     }
   }
   return Promise.reject(message); //if some other error::  return with the error
