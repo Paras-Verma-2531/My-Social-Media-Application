@@ -10,10 +10,31 @@
   .left-part {
     flex: 1;
     text-align: center;
-    .user-img {
-      height: 90px;
-      width: 90px;
-      border-radius: 50%;
+    .input-user-img {
+      display: flex;
+      align-items: center;
+      outline: none;
+      justify-content: center;
+      .labelImage {
+        width: 80px;
+        height: 80px;
+        outline: none;
+        cursor: pointer;
+        border: 2px dashed var(--accent-color);
+        border-radius: 50%;
+        img {
+          height: 100%;
+          width: 100%;
+          border-radius: 50%;
+          border: none;
+          outline: none;
+        }
+      }
+      //to hide:: choose file button
+      .inputImage {
+        outline: none;
+       display: none;
+      }
     }
   }
   .right-part {

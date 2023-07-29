@@ -1,21 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import "./UpdateProfile.scss";
-import userImg from '../../assets/user.png'
 function UpdateProfile() {
+  const userProfile = useSelector((state) => state.appConfigReducer.myProfile);
+  const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
+  const [userImg, setUserImg] = useState("");
+  useEffect(() => {
+    setName(userProfile?.name);
+    setBio(userProfile?.bio);
+    setUserImg(userProfile?.avatar?.url);
+  }, [userProfile]);
+  function handleInputImage(e) {
+    //fileReader to read file and allow to show on profile pic as well
+    const file = e.target.files[0];
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = () => {
+      if (fileReader.readyState === fileReader.DONE)
+        setUserImg(fileReader.result);
+    };
+  }
   return (
     <div className="updateProfile">
       <div className="container">
         <div className="left-part">
-            <img src={userImg} alt="user-profile" className="user-img" />
+          <div className="input-user-img">
+            <label htmlFor="image" className="labelImage">
+              <img src={userImg} alt={name} />
+            </label>
+            <input
+              type="file"
+              id="image"
+              className="inputImage"
+              accept="image/*"
+              onChange={handleInputImage}
+            />
+          </div>
         </div>
         <div className="right-part">
-            <form>
-                <input type="text" placeholder="Your name"
-                className="input"/>
-                <textarea className="input" placeholder="Your bio"></textarea>
-                <input type="submit" className="btn btn-primary"/>
-            </form>
-            <button className="btn btn-secondary">Delete Account</button>
+          <form>
+            <input
+              type="text"
+              value={name}
+              placeholder="Your name"
+              onChange={(event) => setName(event.target.value)}
+              className="input"
+            />
+            <textarea
+              className="input"
+              value={bio}
+              onChange={(event) => setBio(event.target.value)}
+              placeholder="Your bio"
+            ></textarea>
+            <input type="submit" className="btn btn-primary" />
+          </form>
+          <button className="btn btn-secondary">Delete Account</button>
         </div>
       </div>
     </div>
