@@ -1,5 +1,6 @@
 const express = require("express");
 require("dotenv").config({ path: "./config.env" }); //set the path to config.env location
+const cloudinary = require("cloudinary").v2;
 const morgan = require("morgan");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -7,6 +8,12 @@ const connectDb = require("./dbConnect");
 const mainRouter = require("./Routers/mainRouter");
 const App = express();
 
+// config cloudinary::
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 //middlewares::
 App.use(express.json()); // used to parse body
 App.use(morgan("common")); // morgan middleware used to create logs

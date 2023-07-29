@@ -1,5 +1,6 @@
 const Post = require("../Models/Post");
 const User = require("../Models/User");
+const cloudinary = require("cloudinary").v2;
 const { success, error } = require("../Utils/responseWrapper");
 const followOrUnfollowController = async (req, res) => {
   const { userIdToFollow } = req.body;
@@ -133,6 +134,30 @@ const getProfileController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+//updateProfileController
+const updateProfileController = async (req, res) => {
+  const { name, bio, userImg } = req.body;
+  try {
+    const currUser = await User.findById(req._id);
+    if (name) currUser.name = name;
+    if (bio) currUser.bio = bio;
+    if (userImg) {
+      // upload the image on cloudinary
+      const cloudImg = await cloudinary.uploader.upload(userImg, {
+        folder: "userProfile",
+      });
+      //save the avatar details for user
+      currUser.avatar = {
+        url: cloudImg.secure_url,
+        publicId: cloudImg.public_id,
+      };
+      await User.save();
+      return res.send(success(200, { currUser }));
+    }
+  } catch (err) {
+    return res.send(error(500, err.message));
+  }
+};
 module.exports = {
   followOrUnfollowController,
   getPostOfFollowingController,
@@ -140,4 +165,5 @@ module.exports = {
   getUserPostsController,
   deleteMyProfileController,
   getProfileController,
+  updateProfileController,
 };
