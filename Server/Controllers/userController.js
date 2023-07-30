@@ -151,7 +151,7 @@ const updateProfileController = async (req, res) => {
         url: cloudImg.secure_url,
         publicId: cloudImg.public_id,
       };
-      await User.save();
+      await currUser.save();
       return res.send(success(200, { currUser }));
     }
   } catch (err) {

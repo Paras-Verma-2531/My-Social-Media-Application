@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProfile } from "../../redux/slice/appConfig";
 import "./UpdateProfile.scss";
 function UpdateProfile() {
   const userProfile = useSelector((state) => state.appConfigReducer.myProfile);
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [userImg, setUserImg] = useState("");
+  const dispatch = useDispatch();
   useEffect(() => {
     setName(userProfile?.name);
     setBio(userProfile?.bio);
-    setUserImg(userProfile?.avatar?.url);
+    setUserImg(userProfile?.avatar?.url || "");
   }, [userProfile]);
+  //function to handle User's input image
   function handleInputImage(e) {
     //fileReader to read file and allow to show on profile pic as well
     const file = e.target.files[0];
@@ -20,6 +23,20 @@ function UpdateProfile() {
       if (fileReader.readyState === fileReader.DONE)
         setUserImg(fileReader.result);
     };
+  }
+  // function to handleSubmit
+  function handleSubmit(event) {
+    event.preventDefault();
+    dispatch(
+      updateProfile(
+        //pass the data in the body for updateProfile slice :: async thunk
+        {
+          name,
+          bio,
+          userImg,
+        }
+      )
+    );
   }
   return (
     <div className="updateProfile">
@@ -39,7 +56,7 @@ function UpdateProfile() {
           </div>
         </div>
         <div className="right-part">
-          <form>
+          <form onSubmit={handleSubmit}>
             <input
               type="text"
               value={name}
@@ -53,7 +70,11 @@ function UpdateProfile() {
               onChange={(event) => setBio(event.target.value)}
               placeholder="Your bio"
             ></textarea>
-            <input type="submit" className="btn btn-primary" />
+            <input
+              type="submit"
+              className="btn btn-primary"
+              onClick={handleSubmit}
+            />
           </form>
           <button className="btn btn-secondary">Delete Account</button>
         </div>
