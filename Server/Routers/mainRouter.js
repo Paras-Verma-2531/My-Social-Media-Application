@@ -1,3 +1,6 @@
+/*
+this file configures all the routers::
+*/
 const authRouter = require("./authRouter");
 const postRouter = require("./postRouter");
 const userRouter = require("./userRouter");
