@@ -25,12 +25,13 @@ function App() {
       <Routes>
         {/* set path to various elements based on endpoint */}
         {/* protected route:: if user is loged-in navigate to home*/}
-        <Route element={<RequireUser />}>
-          <Route element={<Home />}>
-            {/* when path is empty show feeds bottom the navbar else profile */}
-            <Route path="/" element={<Feed />} />
-            <Route path="/profile/:userId" element={<Profile />} />
-            <Route path="/updateProfile" element={<UpdateProfile />} />
+        <Route element={<RequireUser/>}>
+          <Route element={<Home/>}>
+            {/* if no path navigate to feed */}
+              <Route path="/" element={<Feed/>}/>
+            {/* if path is profile with id : navigate to userProfile */}
+            <Route path="/profile:/userId" element={<Profile/>}/>
+            <Route path="/updateProfile" element={<UpdateProfile/>}/>
           </Route>
         </Route>
         <Route path="/login" element={<Login />} />
