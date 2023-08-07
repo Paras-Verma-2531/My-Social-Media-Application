@@ -40,7 +40,7 @@ axiosClient.interceptors.response.use(async (response) => {
       OriginalRequest.headers[
         "Authorization"
       ] = `Bearer ${newResponse.data.response.newAccessToken}`;
-      return axios(OriginalRequest);
+      return axios(OriginalRequest);// not axiosClient because it will use it's Authorization header
     } else {
       //Refresh token is also expired: thus user need to re-login
       // delete it's access token from localStorage
