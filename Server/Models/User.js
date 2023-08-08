@@ -21,10 +21,12 @@ const userSchema = mongoose.Schema(
     bio: {
       type: String,
     },
+    //Image will be stored at cloudinary and url will be stored in db
     avatar: {
       publicId: String,
       url: String,
     },
+    //refers to the users who follows the current user :: me
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId, //fetch the object id from db
