@@ -1,12 +1,10 @@
 const Post = require("../Models/Post");
 const User = require("../Models/User");
 const { success, error } = require("../Utils/responseWrapper");
-const getAllPostController = async (req, res) => {
-  return res.send(success(200, "these are all your post"));
-};
 //controller to create new post
 const createPostController = async (req, res) => {
   const { caption } = req.body;
+  if(!caption)return res.send(error(404,"caption required"));
   const owner = req._id;
   const user = await User.findById(owner); //find the user to whom this post belong
   try {
@@ -87,7 +85,6 @@ const deletePostController = async (req, res) => {
 };
 module.exports = {
   createPostController,
-  getAllPostController,
   likeAndDislikeController,
   updatePostController,
   deletePostController,
