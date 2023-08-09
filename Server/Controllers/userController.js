@@ -69,6 +69,7 @@ const getMyPostsController = async (req, res) => {
 //get UserPosts
 const getUserPostsController = async (req, res) => {
   const { userId } = req.body;
+  if(!userId)return res.send(error(400,"userId is required"));
   try {
     const user = await User.findById(userId);
     if (!user) return res.send(error(404, "user not found"));
