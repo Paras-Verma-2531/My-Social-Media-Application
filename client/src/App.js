@@ -30,7 +30,7 @@ function App() {
             {/* if no path navigate to feed */}
               <Route path="/" element={<Feed/>}/>
             {/* if path is profile with id : navigate to userProfile */}
-            <Route path="/profile:/userId" element={<Profile/>}/>
+            <Route path="/profile/:userId" element={<Profile/>}/>
             <Route path="/updateProfile" element={<UpdateProfile/>}/>
           </Route>
         </Route>
