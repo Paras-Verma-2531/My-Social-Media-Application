@@ -15,7 +15,7 @@ cloudinary.config({
   api_secret: process.env.API_SECRET,
 });
 //middlewares::
-App.use(express.json()); // used to parse body
+App.use(express.json({ limit: "10mb" })); // used to parse body :: limit --> amount of data that can be parsed
 App.use(morgan("common")); // morgan middleware used to create logs
 App.use(cookieParser()); // used to parse data inside cookies
 App.use(
