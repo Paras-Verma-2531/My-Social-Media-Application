@@ -1,16 +1,26 @@
 const Post = require("../Models/Post");
 const User = require("../Models/User");
+const cloudinary = require("cloudinary").v2;
 const { success, error } = require("../Utils/responseWrapper");
 //controller to create new post
 const createPostController = async (req, res) => {
-  const { caption } = req.body;
-  if(!caption)return res.send(error(404,"caption required"));
-  const owner = req._id;
-  const user = await User.findById(owner); //find the user to whom this post belong
+  const { caption, postImg } = req.body;
   try {
+    if (!caption || !postImg)
+      return res.send(error(404, "caption and post Image are required"));
+    const owner = req._id;
+    //set the post image in cloudinary::
+    const cloudImg = await cloudinary.uploader.upload(postImg, {
+      folder: "postImage",
+    });
+    const user = await User.findById(owner); //find the user to whom this post belong
     const post = await Post.create({
       owner,
       caption,
+      image: {
+        url: cloudImg.secure_url,
+        publicId: cloudImg.public_id,
+      },
     });
     user.posts.push(post._id); //push the post id into the posts array of User schema
     await user.save(); // to update changes to user schema

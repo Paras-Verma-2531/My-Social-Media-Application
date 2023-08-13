@@ -4,6 +4,7 @@ import userImg from "../../assets/user.png";
 import Post from "../post/Post";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import CreatePost from "../createPost/CreatePost";
 function Profile() {
   const userProfile = useSelector((state) => state.appConfigReducer.myProfile);
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ function Profile() {
     <div className="profile">
       <div className="container">
         <div className="left-part">
+          <CreatePost/>
           <Post />
           <Post />
           <Post />
