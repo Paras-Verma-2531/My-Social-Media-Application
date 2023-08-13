@@ -9,8 +9,8 @@ function UpdateProfile() {
   const [userImg, setUserImg] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
-    setName(userProfile?.name);
-    setBio(userProfile?.bio);
+    setName(userProfile?.name||"");
+    setBio(userProfile?.bio||"");
     setUserImg(userProfile?.avatar?.url || "");
   }, [userProfile]);
   //function to handle User's input image
