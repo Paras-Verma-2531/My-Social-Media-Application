@@ -1,14 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosClient } from "../../Utils/axiosClient";
-// Redux thunk to getMyProfile
+// Redux thunk to call getMyProfile API asyncronously
 export const getMyProfile = createAsyncThunk(
   "user/getMyProfile",
   async (body, thunkAPI) => {
     try {
       //loading bar
       thunkAPI.dispatch(setLoading(true));
+      //here result is coming from interceptor thus == actualResponse.data where actualResponse contains [config,data,..]
       const result = await axiosClient.get("/user/getMyProfile");
-      return result.response;
+      return result.response;//data is returned to extraReducers
     } catch (error) {
       return Promise.reject(error);
     } finally {
@@ -30,6 +31,7 @@ export const updateProfile = createAsyncThunk(
     }
   }
 );
+//Slice which consist the states :: isLoading,myProfile
 const appConfigSlice = createSlice({
   name: "appConfigSlice",
   initialState: {
@@ -38,9 +40,10 @@ const appConfigSlice = createSlice({
   },
   reducers: {
     setLoading: (state, action) => {
-      state.isLoading = action.payload;
+      state.isLoading = action.payload;// to the set the isLoading state to true/false
     },
   },
+  //only used when async thunk is present
   extraReducers: (builder) => {
     builder
       .addCase(getMyProfile.fulfilled, (state, action) => {
