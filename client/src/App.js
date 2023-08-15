@@ -9,6 +9,7 @@ import UpdateProfile from "./Components/updateProfile/UpdateProfile";
 import LoadingBar from "react-top-loading-bar";
 import { useSelector } from "react-redux";
 import { useEffect, useRef} from "react";
+import OnlyIfNotLoggedIn from "./Components/OnlyIfNotLoggedIn";
 function App() {
   const isLoading = useSelector((state) => state.appConfigReducer.isLoading);//subscribe to the loadingSlice reducer
   const loadingRef = useRef(null);
@@ -34,8 +35,11 @@ function App() {
             <Route path="/updateProfile" element={<UpdateProfile/>}/>
           </Route>
         </Route>
+        {/* if user is not logged In then navigate to home : else login/signup */}
+        <Route element={<OnlyIfNotLoggedIn/>}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        </Route>
       </Routes>
     </>
   );
