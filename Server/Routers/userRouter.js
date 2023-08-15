@@ -1,6 +1,6 @@
 const {
   followOrUnfollowController,
-  getPostOfFollowingController,
+  getFeedDataController,
   getMyPostsController,
   getUserPostsController,
   deleteMyProfileController,
@@ -12,11 +12,7 @@ const requireUserMiddleware = require("../Middlewares/requireUser");
 const userRouter = require("express").Router();
 userRouter.post("/follow", requireUserMiddleware, followOrUnfollowController);
 //API to: get posts of his followings:
-userRouter.get(
-  "/getPosts",
-  requireUserMiddleware,
-  getPostOfFollowingController
-);
+userRouter.get("/getFeedData", requireUserMiddleware, getFeedDataController);
 userRouter.get("/myPosts", requireUserMiddleware, getMyPostsController);
 userRouter.post("/userPosts", requireUserMiddleware, getUserPostsController);
 //API to delete user's account

@@ -1,6 +1,6 @@
 const Post = require("../Models/Post");
 const User = require("../Models/User");
-const {mapPostOutput} = require("../Utils/postUtils");
+const { mapPostOutput } = require("../Utils/postUtils");
 const cloudinary = require("cloudinary").v2;
 const { success, error } = require("../Utils/responseWrapper");
 const followOrUnfollowController = async (req, res) => {
@@ -35,19 +35,30 @@ const followOrUnfollowController = async (req, res) => {
   }
 };
 // Controller to get posts of user followings::
-const getPostOfFollowingController = async (req, res) => {
+const getFeedDataController = async (req, res) => {
   const currUserId = req._id;
-  const currUser = await User.findById(currUserId);
+  const currUser = await User.findById(currUserId).populate("followings");
   //fetch post of currUser followings:
   try {
-    const posts = await Post.find({
+    const Fullposts = await Post.find({
       // get post of all the users: where owner of post is present in user's following list
       owner: {
         $in: currUser.followings,
       },
     });
+    //parse the posts
+    const posts = Fullposts.map((item) =>
+      mapPostOutput(item, currUserId)
+    ).reverse();
     // Another approach could be to iterate in followings of user and fetch their posts
-    return res.send(success(200, posts));
+    //for the suggestions:
+    const followingIds = currUser.followings.map((item) => item._id);
+    const suggestions = await User.find({
+      _id: {
+        $nin: followingIds,
+      },
+    });
+    return res.send(success(200, { ...currUser._doc, suggestions, posts }));
   } catch (err) {
     return res.send(error(500, err.message));
   }
@@ -148,8 +159,10 @@ const getUserProfileController = async (req, res) => {
       },
     });
     const fullPosts = user.posts;
-    const posts = fullPosts.map((post) => mapPostOutput(post, req._id)).reverse(); //reverse such that latest post appears at top
-    return res.send(success(200, {...user._doc, posts})); //_doc prevent irrelevant data from sending
+    const posts = fullPosts
+      .map((post) => mapPostOutput(post, req._id))
+      .reverse(); //reverse such that latest post appears at top
+    return res.send(success(200, { ...user._doc, posts })); //_doc prevent irrelevant data from sending
   } catch (err) {
     return res.send(error(500, err.message));
   }
@@ -180,7 +193,7 @@ const updateProfileController = async (req, res) => {
 };
 module.exports = {
   followOrUnfollowController,
-  getPostOfFollowingController,
+  getFeedDataController,
   getMyPostsController,
   getUserPostsController,
   deleteMyProfileController,
