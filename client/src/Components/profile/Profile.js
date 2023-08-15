@@ -1,18 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Profile.scss";
 import userImg from "../../assets/user.png";
 import Post from "../post/Post";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import CreatePost from "../createPost/CreatePost";
+import { getUserProfile } from "../../redux/slice/postsSlice";
 function Profile() {
-  const userProfile = useSelector((state) => state.appConfigReducer.myProfile);
+  //const userProfile = useSelector((state) => state.appConfigReducer.myProfile);
   const navigate = useNavigate();
+  const params = useParams();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      getUserProfile({
+        userId: params.userId,
+      })
+    );
+  }, []);
   return (
     <div className="profile">
       <div className="container">
         <div className="left-part">
-          <CreatePost/>
+          <CreatePost />
           <Post />
           <Post />
           <Post />
@@ -20,11 +30,7 @@ function Profile() {
         </div>
         <div className="right-part">
           <div className="profile-card">
-            <img
-              src={userProfile?.avatar?.url || userImg}
-              alt="user-img"
-              className="user-img"
-            />
+            <img src={userImg} alt="user-img" className="user-img" />
             <h3 className="user-name">Paras Verma</h3>
             <div className="follower-info">
               <h4>40 followers</h4>
@@ -43,5 +49,4 @@ function Profile() {
     </div>
   );
 }
-
 export default Profile;

@@ -1,5 +1,6 @@
 const Post = require("../Models/Post");
 const User = require("../Models/User");
+const {mapPostOutput} = require("../Utils/postUtils");
 const cloudinary = require("cloudinary").v2;
 const { success, error } = require("../Utils/responseWrapper");
 const followOrUnfollowController = async (req, res) => {
@@ -69,7 +70,7 @@ const getMyPostsController = async (req, res) => {
 //get UserPosts
 const getUserPostsController = async (req, res) => {
   const { userId } = req.body;
-  if(!userId)return res.send(error(400,"userId is required"));
+  if (!userId) return res.send(error(400, "userId is required"));
   try {
     const user = await User.findById(userId);
     if (!user) return res.send(error(404, "user not found"));
@@ -135,6 +136,24 @@ const getProfileController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+//getUserProfile
+const getUserProfileController = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await User.findById(userId).populate({
+      //populate the posts with it's owner
+      path: "posts",
+      populate: {
+        path: "owner",
+      },
+    });
+    const fullPosts = user.posts;
+    const posts = fullPosts.map((post) => mapPostOutput(post, req._id)).reverse(); //reverse such that latest post appears at top
+    return res.send(success(200, {...user._doc, posts})); //_doc prevent irrelevant data from sending
+  } catch (err) {
+    return res.send(error(500, err.message));
+  }
+};
 //updateProfileController
 const updateProfileController = async (req, res) => {
   const { name, bio, userImg } = req.body;
@@ -167,4 +186,5 @@ module.exports = {
   deleteMyProfileController,
   getProfileController,
   updateProfileController,
+  getUserProfileController,
 };

@@ -6,6 +6,7 @@ const {
   deleteMyProfileController,
   getProfileController,
   updateProfileController,
+  getUserProfileController,
 } = require("../Controllers/userController");
 const requireUserMiddleware = require("../Middlewares/requireUser");
 const userRouter = require("express").Router();
@@ -21,5 +22,10 @@ userRouter.post("/userPosts", requireUserMiddleware, getUserPostsController);
 //API to delete user's account
 userRouter.delete("/", requireUserMiddleware, deleteMyProfileController);
 userRouter.get("/getMyProfile", requireUserMiddleware, getProfileController);
+userRouter.post(
+  "/getUserProfile",
+  requireUserMiddleware,
+  getUserProfileController
+);
 userRouter.put("/", requireUserMiddleware, updateProfileController);
 module.exports = userRouter;
