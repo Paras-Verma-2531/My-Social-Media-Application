@@ -4,7 +4,7 @@
   margin-top: 15px;
   margin-bottom: 5px;
   border-radius: 5px;
-  padding-inline:5px;
+  padding-inline: 5px;
   box-shadow: 2px 2px 4px var(--border-color);
   .heading {
     display: flex;
@@ -26,6 +26,7 @@
   .like {
     display: flex;
     align-items: center;
+    cursor: pointer;
     gap: 10px;
     .icon {
       font-size: 1.2rem;

@@ -1,5 +1,6 @@
 const Post = require("../Models/Post");
 const User = require("../Models/User");
+const { mapPostOutput } = require("../Utils/postUtils");
 const cloudinary = require("cloudinary").v2;
 const { success, error } = require("../Utils/responseWrapper");
 //controller to create new post
@@ -24,7 +25,7 @@ const createPostController = async (req, res) => {
     });
     user.posts.push(post._id); //push the post id into the posts array of User schema
     await user.save(); // to update changes to user schema
-    return res.send(success(201, {post}));
+    return res.send(success(201, { post }));
   } catch (err) {
     return res.send(error(500, err.message));
   }
@@ -35,19 +36,18 @@ const likeAndDislikeController = async (req, res) => {
   const currUserId = req._id; // viewer of the post
 
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("owner");
     if (!post) return res.send(error(404, "Post not found"));
     // if user present :: means user already liked the post
     if (post.likes.includes(currUserId)) {
       const index = post.likes.indexOf(currUserId);
       post.likes.splice(index, 1); //delete 1 element present at index:
-      await post.save();
-      return res.send(success(200, "post unliked"));
+    } else {
+      //like the post
+      post.likes.push(currUserId); //add curr user id
     }
-    //like the post
-    post.likes.push(currUserId); //add curr user id
     await post.save();
-    return res.send(success(200, "post liked"));
+    return res.send(success(200, mapPostOutput(post, currUserId)));
   } catch (err) {
     return res.send(error(500, err.message));
   }

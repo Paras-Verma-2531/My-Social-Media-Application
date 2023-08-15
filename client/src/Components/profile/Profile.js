@@ -30,7 +30,9 @@ function Profile() {
           {/* component which allow user to create post */}
           <CreatePost />
           {/* iterate on user's profile posts and render them */}
-          {userProfile?.posts?.map(post=><Post key={post._id} post={post}/>)}
+          {userProfile?.posts?.map((post) => (
+            <Post key={post._id} post={post} />
+          ))}
         </div>
         <div className="right-part">
           <div className="profile-card">
