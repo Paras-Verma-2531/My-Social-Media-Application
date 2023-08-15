@@ -90,7 +90,7 @@ function generateToken(payload) {
   try {
     const TOKEN_SEC_KEY = process.env.TOKEN_SEC_KEY; //fetch the token key
     return jwt.sign(payload, TOKEN_SEC_KEY, {
-      expiresIn: "5m",
+      expiresIn: "1d",
     }); //use sign method of JWT to create & return accessToken
   } catch (error) {
     console.log(error);
