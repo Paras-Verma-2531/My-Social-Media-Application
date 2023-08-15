@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Profile.scss";
 import userImg from "../../assets/user.png";
 import Post from "../post/Post";
@@ -7,17 +7,22 @@ import { useDispatch, useSelector } from "react-redux";
 import CreatePost from "../createPost/CreatePost";
 import { getUserProfile } from "../../redux/slice/postsSlice";
 function Profile() {
-  //const userProfile = useSelector((state) => state.appConfigReducer.myProfile);
   const navigate = useNavigate();
   const params = useParams();
+  const myProfile = useSelector((state) => state.appConfigReducer.myProfile);
+  const userProfile = useSelector((store) => store.postReducer.userProfile);
   const dispatch = useDispatch();
+  const [isMyProfile, setIsMyProfile] = useState(false);
+  //whenever the page renders/load call the get User profile API
   useEffect(() => {
     dispatch(
       getUserProfile({
         userId: params.userId,
       })
     );
-  }, []);
+    //set isMyProfile:: based on validation
+    setIsMyProfile(params.userId === myProfile?._id);
+  }, [myProfile]);
   return (
     <div className="profile">
       <div className="container">
@@ -30,19 +35,27 @@ function Profile() {
         </div>
         <div className="right-part">
           <div className="profile-card">
-            <img src={userImg} alt="user-img" className="user-img" />
-            <h3 className="user-name">Paras Verma</h3>
+            <img
+              src={userProfile?.avatar?.url || userImg}
+              alt="user-img"
+              className="user-img"
+            />
+            <h3 className="user-name">{userProfile?.name}</h3>
             <div className="follower-info">
-              <h4>40 followers</h4>
-              <h4>20 followings</h4>
+              <h4>{`${userProfile?.followers?.length || 0} followers`}</h4>
+              <h4>{`${userProfile?.followings?.length || 0} followings`}</h4>
             </div>
-            <button className="follow btn btn-primary">follow</button>
-            <button
-              className="update btn btn-secondary"
-              onClick={() => navigate("/updateProfile")}
-            >
-              Update Profile
-            </button>
+            {!isMyProfile && (
+              <button className="follow btn btn-primary">follow</button>
+            )}
+            {isMyProfile && (
+              <button
+                className="update btn btn-secondary"
+                onClick={() => navigate("/updateProfile")}
+              >
+                Update Profile
+              </button>
+            )}
           </div>
         </div>
       </div>
