@@ -7,19 +7,19 @@ function Post({ post }) {
   return (
     <div className="post">
       <div className="heading">
-        <Avatar />
-        <h4>Paras</h4>
+        <Avatar src={post?.owner?.avatar?.url}/>
+        <h4>{post?.owner?.name}</h4>
       </div>
       <div className="content">
-        <img src={dummyImg} alt="" />
+        <img src={post?.image?.url} alt="" />
       </div>
       <div className="footer">
         <div className="like">
           <AiOutlineHeart className="icon" />
-          <h4>4 likes</h4>
+          <h4>{`${post?.likesCount} likes`}</h4>
         </div>
         <p className="caption">
-          Lost in the wilderness, finding solace in nature's embrace 🌿🍃
+          {post?.caption}
         </p>
         <p className="time-ago">4 hrs ago</p>
       </div>

@@ -27,11 +27,10 @@ function Profile() {
     <div className="profile">
       <div className="container">
         <div className="left-part">
+          {/* component which allow user to create post */}
           <CreatePost />
-          <Post />
-          <Post />
-          <Post />
-          <Post />
+          {/* iterate on user's profile posts and render them */}
+          {userProfile?.posts?.map(post=><Post key={post._id} post={post}/>)}
         </div>
         <div className="right-part">
           <div className="profile-card">

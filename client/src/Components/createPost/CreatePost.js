@@ -3,21 +3,27 @@ import Avatar from "../avatar/Avatar";
 import "./CreatePost.scss";
 import { BsCardImage } from "react-icons/bs";
 import { axiosClient } from "../../Utils/axiosClient";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/slice/appConfig";
+import { getUserProfile } from "../../redux/slice/postsSlice";
+import { useParams } from "react-router-dom";
 function CreatePost() {
   const [postImg, setPostImg] = useState("");
   const [caption, setCaption] = useState("");
+  const myProfile=useSelector(store=>store.appConfigReducer.myProfile)
+  const params=useParams();
   const dispatch = useDispatch();
   //method to handle Submit
   async function handlePostSubmit() {
     try {
-      dispatch(setLoading(true));
+      dispatch(setLoading(true));//for top loading bar
       const result = await axiosClient.post("/post", {
         caption,
         postImg,
       });
-      console.log("post done ", result);
+      dispatch(getUserProfile({
+        userId: params.userId,
+      }))
     } catch (err) {
     } finally {
       dispatch(setLoading(false));
@@ -39,7 +45,7 @@ function CreatePost() {
   return (
     <div className="createPost">
       <div className="post-left-part">
-        <Avatar />
+        <Avatar src={myProfile?.avatar?.url} />
       </div>
       <div className="post-right-part">
         <input

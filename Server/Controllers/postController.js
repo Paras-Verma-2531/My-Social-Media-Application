@@ -24,7 +24,7 @@ const createPostController = async (req, res) => {
     });
     user.posts.push(post._id); //push the post id into the posts array of User schema
     await user.save(); // to update changes to user schema
-    return res.send(success(201, post));
+    return res.send(success(201, {post}));
   } catch (err) {
     return res.send(error(500, err.message));
   }
