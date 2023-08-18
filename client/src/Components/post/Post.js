@@ -5,8 +5,10 @@ import { FcLike } from "react-icons/fc";
 import { useDispatch } from "react-redux";
 import Avatar from "../avatar/Avatar";
 import { likesAndDislike } from "../../redux/slice/postsSlice";
+import { useNavigate } from "react-router-dom";
 function Post({ post }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   //method to handlePostLiked
   async function handlePostLiked() {
     //call the async thunk with body as postId
@@ -14,7 +16,10 @@ function Post({ post }) {
   }
   return (
     <div className="post">
-      <div className="heading">
+      <div
+        className="heading"
+        onClick={() => navigate(`/profile/${post?.owner?._id}`)}
+      >
         <Avatar src={post?.owner?.avatar?.url} />
         <h4>{post?.owner?.name}</h4>
       </div>

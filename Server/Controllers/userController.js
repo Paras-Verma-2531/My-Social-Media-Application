@@ -148,13 +148,15 @@ const getProfileController = async (req, res) => {
 const getUserProfileController = async (req, res) => {
   try {
     const { userId } = req.body;
-    const user = await User.findById(userId).populate({
-      //populate the posts with it's owner
-      path: "posts",
-      populate: {
-        path: "owner",
-      },
-    });
+    const user = await User.findById(userId)
+      .populate({
+        //populate the posts with it's owner
+        path: "posts",
+        populate: {
+          path: "owner",
+        },
+      })
+      .populate("followers");
     const fullPosts = user.posts;
     const posts = fullPosts
       .map((post) => mapPostOutput(post, req._id))

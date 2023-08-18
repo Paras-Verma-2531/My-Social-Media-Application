@@ -9,9 +9,10 @@
   .user-info {
     display: flex;
     align-items: center;
+    cursor: pointer;
     gap: 20px;
   }
   .follow-link {
     color: var(--accent-color);
-    }
+  }
 }

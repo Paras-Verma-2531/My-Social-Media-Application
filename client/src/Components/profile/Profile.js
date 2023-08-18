@@ -47,7 +47,13 @@ function Profile() {
               <h4>{`${userProfile?.followings?.length || 0} followings`}</h4>
             </div>
             {!isMyProfile && (
-              <button className="follow btn btn-primary">follow</button>
+              <button className="follow btn btn-primary">
+                {userProfile?.followers?.findIndex(
+                  (item) => item._id === myProfile._id
+                ) == -1
+                  ? "follow"
+                  : "unfollow"}
+              </button>
             )}
             {isMyProfile && (
               <button
