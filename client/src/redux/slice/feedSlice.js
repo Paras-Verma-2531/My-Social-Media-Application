@@ -63,9 +63,14 @@ const feedSlice = createSlice({
         //if user was present in the followings list :: remove him
         if (index !== -1) {
           state.feedData.followings.splice(index, 1);
+          state.feedData.suggestions.push(user);
           //then add him to the suggestions list:
         } else {
-          state.feedData.followings.push(user._id);
+          const suggIndex = state?.feedData?.suggestions?.findIndex(
+            (item) => item._id === user._id
+          );
+          state.feedData.followings.push(user);
+          state.feedData.suggestions.splice(suggIndex, 1);
         }
       });
   },
