@@ -47,10 +47,10 @@ const postSlice = createSlice({
       })
       .addCase(likesAndDislike.fulfilled, (state, action) => {
         const post = action.payload;
-        const index = state.userProfile.posts.findIndex(
+        const index = state?.userProfile?.posts?.findIndex(
           (item) => item._id === post._id
         );
-        if (index !== -1) {
+        if (index !== undefined && index !== -1) {
           state.userProfile.posts[index] = post;
         }
       });
