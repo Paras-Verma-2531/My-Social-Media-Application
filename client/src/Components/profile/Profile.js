@@ -28,7 +28,7 @@ function Profile() {
       <div className="container">
         <div className="left-part">
           {/* component which allow user to create post */}
-          <CreatePost />
+          {isMyProfile && <CreatePost />}
           {/* iterate on user's profile posts and render them */}
           {userProfile?.posts?.map((post) => (
             <Post key={post._id} post={post} />
