@@ -25,7 +25,14 @@ export const followOrUnfollow = createAsyncThunk(
   "user/followOrUnfollow",
   async (body, thunkAPI) => {
     try {
-    } catch (error) {}
+      thunkAPI.dispatch(setLoading(true));
+      const result = await axiosClient.post("/user/follow", body);
+      return result.response.user;
+    } catch (error) {
+      return Promise.reject(error);
+    } finally {
+      thunkAPI.dispatch(setLoading(false));
+    }
   }
 );
 const feedSlice = createSlice({
@@ -46,6 +53,19 @@ const feedSlice = createSlice({
         );
         if (index !== undefined && index !== -1) {
           state.feedData.posts[index] = post;
+        }
+      })
+      .addCase(followOrUnfollow.fulfilled, (state, action) => {
+        const user = action.payload;
+        const index = state?.feedData?.followings?.findIndex(
+          (item) => item._id === user._id
+        );
+        //if user was present in the followings list :: remove him
+        if (index !== -1) {
+          state.feedData.followings.splice(index, 1);
+          //then add him to the suggestions list:
+        } else {
+          state.feedData.followings.push(user._id);
         }
       });
   },

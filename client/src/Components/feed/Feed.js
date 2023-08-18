@@ -11,6 +11,7 @@ function Feed() {
   useEffect(() => {
     dispatch(getFeedData());
   }, [dispatch]);
+
   return (
     <div className="feed">
       <div className="container">

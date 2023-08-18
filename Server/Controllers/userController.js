@@ -19,17 +19,14 @@ const followOrUnfollowController = async (req, res) => {
       const followerIndex = await userToFollow.followers.indexOf(currUserId);
       // remove from the followers list of other user
       userToFollow.followers.splice(followerIndex, 1);
-      await userToFollow.save();
-      await currUser.save();
-      return res.send(success(200, "user unfollowed"));
     } //following new user
     else {
       currUser.followings.push(userIdToFollow);
       userToFollow.followers.push(currUserId);
-      await userToFollow.save();
-      await currUser.save();
-      return res.send(success(200, "user followed"));
     }
+    await userToFollow.save();
+    await currUser.save();
+    return res.send(success(200, { user: userToFollow }));
   } catch (err) {
     return res.send(error(500, err.message));
   }
