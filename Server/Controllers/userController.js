@@ -42,7 +42,7 @@ const getFeedDataController = async (req, res) => {
       owner: {
         $in: currUser.followings,
       },
-    });
+    }).populate("owner");
     //parse the posts
     const posts = Fullposts.map((item) =>
       mapPostOutput(item, currUserId)
