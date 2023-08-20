@@ -3,10 +3,26 @@ import Avatar from "../avatar/Avatar";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineLogout } from "react-icons/ai";
 import "./Navbar.scss";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { axiosClient } from "../../Utils/axiosClient";
+import { setLoading } from "../../redux/slice/appConfig";
+import { KEY_ACCESS_TOKEN, removeItem } from "../../Utils/localStorageManager";
 function Navbar() {
   const userProfile = useSelector((state) => state.appConfigReducer.myProfile);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  //function to handleLogout
+  function handleLogOut() {
+    try {
+      dispatch(setLoading(true));
+      axiosClient.get("/auth/logout");
+      removeItem(KEY_ACCESS_TOKEN);
+      dispatch(setLoading(false));
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="navbar">
       <div className="container">
@@ -21,7 +37,7 @@ function Navbar() {
           >
             <Avatar src={userProfile?.avatar?.url} />
           </div>
-          <div className="logout hover-link">
+          <div className="logout hover-link" onClick={handleLogOut}>
             <AiOutlineLogout />
           </div>
         </div>
