@@ -22,7 +22,7 @@ function Profile() {
     );
     //set isMyProfile:: based on validation
     setIsMyProfile(params.userId === myProfile?._id);
-  }, [myProfile]);
+  }, [myProfile, params.userId]);
   return (
     <div className="profile">
       <div className="container">
