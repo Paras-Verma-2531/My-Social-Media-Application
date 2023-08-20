@@ -6,12 +6,20 @@ import { useDispatch } from "react-redux";
 import Avatar from "../avatar/Avatar";
 import { likesAndDislike } from "../../redux/slice/postsSlice";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "../../redux/slice/appConfig";
+import { TOAST_SUCCESS } from "../../App";
 function Post({ post }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //method to handlePostLiked
   async function handlePostLiked() {
     //call the async thunk with body as postId
+    dispatch(showToast(
+      {
+        type:TOAST_SUCCESS,
+        message:"post liked or unliked"
+      }
+    ))
     dispatch(likesAndDislike({ postId: post._id }));
   }
   return (

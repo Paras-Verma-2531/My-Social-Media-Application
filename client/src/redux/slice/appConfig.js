@@ -37,11 +37,16 @@ const appConfigSlice = createSlice({
   initialState: {
     isLoading: false, // for the loading bar
     myProfile: {},
+    toastData:{}
   },
   reducers: {
     setLoading: (state, action) => {
       state.isLoading = action.payload;// to the set the isLoading state to true/false
     },
+    showToast:(state,action)=>
+    {
+      state.toastData=action.payload;
+    }
   },
   //only used when async thunk is present
   extraReducers: (builder) => {
@@ -55,4 +60,4 @@ const appConfigSlice = createSlice({
   },
 });
 export default appConfigSlice.reducer;
-export const { setLoading } = appConfigSlice.actions;
+export const { setLoading,showToast } = appConfigSlice.actions;

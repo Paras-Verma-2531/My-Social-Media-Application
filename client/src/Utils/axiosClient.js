@@ -5,6 +5,9 @@ import {
   removeItem,
   setItem,
 } from "./localStorageManager";
+import store from '../redux/store'
+import { showToast } from "../redux/slice/appConfig";
+import { TOAST_FAILURE } from "../App";
 // axios is better than fetch to call API's because of intercepters
 export const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_SERVER_BASE_URL,
@@ -25,6 +28,12 @@ axiosClient.interceptors.response.use(async (response) => {
   if (status === "ok") return data; // if no error encountered:: return the data
   const { statusCode, message } = data;
   const OriginalRequest = response.config;
+  store.dispatch(showToast(
+    {
+      type:TOAST_FAILURE,
+      message
+    }
+  ))
   if (statusCode === 401 && !OriginalRequest._retry) {
     OriginalRequest._retry = true; //prevent from infinite loop
     // Access token is experied
@@ -50,4 +59,13 @@ axiosClient.interceptors.response.use(async (response) => {
     }
   }
   return Promise.reject(message); //if some other error::  return with the error
+},async(error)=>
+{
+  store.dispatch(showToast(
+    {
+      type:TOAST_FAILURE,
+      message:error.message
+    }
+  ))
+  return Promise.reject(error); 
 });
