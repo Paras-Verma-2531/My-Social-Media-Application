@@ -15,17 +15,21 @@ function Login() {
   //function to handle Data on submit
   async function handleSubmit(event) {
     event.preventDefault(); //prevent the default behaviour of form
-    const result = await axiosClient.post(
-      "/auth/login",
-      //send the data in the body of API
-      {
-        email: userEmail,
-        password: userPassword,
-      }
-    );
-    setItem(KEY_ACCESS_TOKEN, result.response.accessToken); //save the access token to localStorage
-    navigate("/"); // navigate to home page once,done with login
-    //console.log(result);
+    try {
+      const result = await axiosClient.post(
+        "/auth/login",
+        //send the data in the body of API
+        {
+          email: userEmail,
+          password: userPassword,
+        }
+      );
+      setItem(KEY_ACCESS_TOKEN, result.response.accessToken); //save the access token to localStorage
+      navigate("/"); // navigate to home page once,done with login
+      //console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <div className="Login">

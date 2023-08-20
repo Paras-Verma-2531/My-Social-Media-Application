@@ -37,7 +37,7 @@ const loginController = async (req, res) => {
     if (!user) return res.send(error(404, "User Not Found"));
     //compare if the given password is correct
     const isPassCorrect = await bcrypt.compare(password, user.password); //compares the given password with old encrypted pass
-    if (!isPassCorrect) return res.send(error(403, "Invalid password"));
+    if (!isPassCorrect) return res.send(error(500, "Invalid password"));
     //create the AccessToken for the user with parameters as: object_id [could be anything]
     const accessToken = generateToken({ _id: user._id });
     //refresh token is used to re-generate access token for the user without the need of re-login

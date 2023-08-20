@@ -32,7 +32,7 @@ axiosClient.interceptors.response.use(
     store.dispatch(
       showToast({
         type: TOAST_FAILURE,
-        message,
+        message
       })
     );
     if (statusCode === 401 && !OriginalRequest._retry) {

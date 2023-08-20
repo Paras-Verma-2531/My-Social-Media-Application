@@ -10,15 +10,19 @@ function Signup() {
   //function to handle Data on submit
   async function handleSubmit(event) {
     event.preventDefault(); //prevent the default behaviour of form
-    const result = await axiosClient.post(
-      "/auth/signup",
-      //send the data in the body of API
-      {
-        email: userEmail,
-        name: userName,
-        password: userPassword,
-      }
-    );
+    try {
+      const result = await axiosClient.post(
+        "/auth/signup",
+        //send the data in the body of API
+        {
+          email: userEmail,
+          name: userName,
+          password: userPassword,
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <div className="Signup">
