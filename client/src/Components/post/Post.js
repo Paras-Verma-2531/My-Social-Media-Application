@@ -36,7 +36,7 @@ function Post({ post }) {
           <h4>{`${post?.likesCount} likes`}</h4>
         </div>
         <p className="caption">{post?.caption}</p>
-        <p className="time-ago">4 hrs ago</p>
+        <p className="time-ago">{post?.timeAgo}</p>
       </div>
     </div>
   );
