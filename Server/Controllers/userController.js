@@ -3,6 +3,18 @@ const User = require("../Models/User");
 const { mapPostOutput } = require("../Utils/postUtils");
 const cloudinary = require("cloudinary").v2;
 const { success, error } = require("../Utils/responseWrapper");
+
+// flow of the code:
+/*
+ fetch the userId to follow,currentUserId
+ if invalid id's return
+ else if already followed
+ {
+   get the index in currentUser.followings array and remove, do the same for other's followers array as well
+   else :: new following
+     add the userId into followings array , followers array of the other user
+ }
+*/
 const followOrUnfollowController = async (req, res) => {
   const { userIdToFollow } = req.body;
   const currUserId = req._id;
@@ -60,7 +72,7 @@ const getFeedDataController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
-//getMyPosts controller
+//getMyPosts controller [ check for all the posts where owner of post === userId]
 const getMyPostsController = async (req, res) => {
   const currUserId = req._id;
   try {
@@ -90,6 +102,13 @@ const getUserPostsController = async (req, res) => {
   }
 };
 //deleteMyProfile controller
+/*
+edge cases:
+ . delete the likes done by the user
+ . delete the userId from other's followers
+ . delete the userId from other's following
+ . delete user post's
+*/
 const deleteMyProfileController = async (req, res) => {
   const currUserId = req._id;
   try {
