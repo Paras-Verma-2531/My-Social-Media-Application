@@ -1,2 +1,3 @@
 # My-Social-Media-Application
-Social Media Application my first full stack MERN  project.
+A full-Stack Social Media Application built using React and NodeJs.
+it provides the functionality of creating posts, updating the profile, likes, comments, etc.
