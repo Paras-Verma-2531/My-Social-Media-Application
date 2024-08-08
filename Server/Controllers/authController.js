@@ -4,6 +4,8 @@ const User = require("../Models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { success, error } = require("../Utils/responseWrapper");
+
+
 //Logic for the signup controller
 const signupController = async (req, res) => {
   try {
@@ -14,11 +16,11 @@ const signupController = async (req, res) => {
     const oldUser = await User.findOne({ email });
     if (oldUser) return res.send(error(409, "Email is already registered"));
     //if user is new, encrypt its password and create new entry in db
-    const decryptPass = await bcrypt.hash(password, 10);
+    const encryptPass = await bcrypt.hash(password, 10);
     await User.create({
       name,
       email,
-      password: decryptPass,
+      password: encryptPass,
     });
     //return res.status(201).json({newUser});
     return res.send(success(201, "new user created successfully"));
@@ -26,7 +28,12 @@ const signupController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+
+
 //Logic for the login controller
+/*
+ NOTE: Access Token is sent to the user and refreshToken in stored in cookies
+*/
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -42,6 +49,8 @@ const loginController = async (req, res) => {
     const accessToken = generateToken({ _id: user._id });
     //refresh token is used to re-generate access token for the user without the need of re-login
     const refreshToken = generateRefreshToken({ _id: user._id });
+
+
     // Access Token need to stored in local storage of frontEnd:
     //Refresh Token need to stored in cookies
     res.cookie("jwt", refreshToken, {
@@ -53,8 +62,10 @@ const loginController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+
+
 //Logic for the logOut controller
-const logOutController = async (req, res) => {
+const logOutController = async (_, res) => {
   //the duty of backend is to delete the RT. cookie :: And the duty of frontend would be to delete the AT. from localStor.
   try {
     res.clearCookie("jwt", {
