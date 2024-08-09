@@ -13,7 +13,7 @@ export const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_SERVER_BASE_URL,
   withCredentials: true, // prevent sending cookie to the frontEnd from backend
 });
-// Interceptors can be defined as the layer just before the frontEnd which provide the smooth process for handeling errors:or other task such as adding Authentication headers
+//NOTE:  Interceptors can be defined as the layer just before the frontEnd which provide the smooth process for handeling errors:or other task such as IMP: adding Authorization headers
 // In our case:: it handles 401 request::i,e to automatically generate the access token without informing frontEnd:
 axiosClient.interceptors.request.use((request) => {
   const accessToken = getItem(KEY_ACCESS_TOKEN); //fetch the access token from localStorage
