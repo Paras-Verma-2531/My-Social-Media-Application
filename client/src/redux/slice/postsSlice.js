@@ -19,6 +19,10 @@ export const getUserProfile = createAsyncThunk(
   }
 );
 //likesAndDislike async thunk
+/*
+in the body the postId has been sent by the Post component
+likeAndDislike send the reponse as {post}
+*/
 export const likesAndDislike = createAsyncThunk(
   "post/likeAndDislike",
   async (body, thunkAPI) => {
