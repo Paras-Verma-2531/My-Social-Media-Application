@@ -43,7 +43,9 @@ const followOrUnfollowController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
-// Controller to get posts of user followings::
+
+
+// Controller to get posts of user followings:: as well as the suggestions for following other user
 const getFeedDataController = async (req, res) => {
   const currUserId = req._id;
   const currUser = await User.findById(currUserId).populate("followings");
@@ -72,6 +74,7 @@ const getFeedDataController = async (req, res) => {
     return res.send(error(500, err.message));
   }
 };
+
 //getMyPosts controller [ check for all the posts where owner of post === userId]
 const getMyPostsController = async (req, res) => {
   const currUserId = req._id;
