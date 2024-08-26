@@ -12,6 +12,12 @@ function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   //function to handleLogout
+  /*
+   when user clicks on his/her profile :: navigate to their profile page [/profile/654te45gfds]
+    which will change the feed content to user's profile content.
+
+    when click on logout [ perform logout functionality]
+  */
   function handleLogOut() {
     try {
       dispatch(setLoading(true));
