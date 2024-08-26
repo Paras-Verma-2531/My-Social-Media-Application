@@ -1,7 +1,12 @@
+/*
+ FeedSlice is responsible for -> get some other user's data,
+   follow or unfollow user
+*/
 import { axiosClient } from "../../Utils/axiosClient";
 import { setLoading } from "./appConfig";
 import { likesAndDislike } from "./postsSlice";
 const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
+
 //getUserProfile async thunk
 export const getFeedData = createAsyncThunk(
   "user/getFeedData",
@@ -10,8 +15,8 @@ export const getFeedData = createAsyncThunk(
       //loading bar
       thunkAPI.dispatch(setLoading(true));
       //here result is coming from interceptor thus == actualResponse.data where actualResponse contains [config,data,..]
+      // userId is fetched from Bearer token by the middleware , thus available at the backend
       const result = await axiosClient.get("/user/getFeedData");
-      console.log(result.response);
       return result.response; //data is returned to extraReducers
     } catch (error) {
       return Promise.reject(error);
@@ -35,6 +40,8 @@ export const followOrUnfollow = createAsyncThunk(
     }
   }
 );
+
+//feedSlice
 const feedSlice = createSlice({
   name: "feedSlice",
   initialState: {
@@ -43,7 +50,7 @@ const feedSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getFeedData.fulfilled, (state, action) => {
-        state.feedData = action.payload;
+        state.feedData = action.payload;// add the feedData to state's feedData
       })
       // to handle like of feed data
       .addCase(likesAndDislike.fulfilled, (state, action) => {
