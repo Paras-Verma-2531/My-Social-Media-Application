@@ -43,7 +43,7 @@ function App() {
       <LoadingBar color="#4db4f8" ref={loadingRef} />
       <Routes>
         {/* set path to various elements based on endpoint */}
-        {/* protected route:: if user is loged-in navigate to home*/}
+        {/*IMP:---> protected route:: if user is loged-in navigate to home*/}
         <Route element={<RequireUser />}>
           <Route element={<Home />}>
             {/* if no path navigate to feed */}
